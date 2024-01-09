@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            position: relative;
+        }
+
+        #container {
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 80px;
+        }
+
+        #response {
+            margin-top: 20px;
+            width: 50vw;
+        }
+
+        #imagePreview {
+            position: fixed;
+            top: 0;
+            right: 0;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            display: none;
+            width: 300px;
+        }
+
+        #imagePreview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+    <title>Gemini Pro Vision</title>
+</head>
+<body>
+    <div id="container">
+        <h2>Process Image with Gemini Pro Vision</h2>
+        <input type="text" id="imageUrl" placeholder="Enter Image Url here">
+        <input type="text" id="query" placeholder="Ask anything here">
+        <button onclick="makeApiCall()">Submit</button>
+        <div id="response"></div>
+    </div>
+
+    <div id="imagePreview">
+        <h2>Image Preview</h2>
+        <img id="previewImage" alt="Image Preview">
+    </div>
+
+    <script>
+        function loadImg() {
+            const imageUrlDiv = document.getElementById('imageUrl');
+            const imagePreviewDiv = document.getElementById('imagePreview')
+            const previewImage = document.getElementById('previewImage');
+            imageUrlDiv.addEventListener('change', (e) => {
+                const imgUrl = e.target.value;
+                console.log(imgUrl)
+                previewImage.src = imgUrl;
+                if(imgUrl.length) {
+                    imagePreviewDiv.style.display = 'block';
+                } else {
+                    imagePreviewDiv.style.display = 'none';
+                }
+            })
+        }
+        function makeApiCall() {
+            const imageUrl = document.getElementById('imageUrl').value;
+            const query = document.getElementById('query').value;
+            const responseDiv = document.getElementById('response');
+
+            // Prepare data to be sent in the request body as JSON
+            const requestData = {
+                url: imageUrl,
+                query: query
+            };
+
+            responseDiv.innerHTML = 'Loading...'
+            
+            // Example using Fetch API for making a POST request with JSON body
+            fetch('/processImage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response in the responseDiv
+                responseDiv.innerHTML = data.response;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                responseDiv.innerHTML = '<p>Error occurred during the API call.</p>';
+            });
+        }
+        loadImg()
+    </script>
+</body>
+</html>
