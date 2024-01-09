@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        #container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #response {
+            margin-top: 20px;
+        }
+
+        #contextBox {
+            height: 200px;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+    <title>Process Text - Gemini</title>
+</head>
+<body>
+    <div id="container">
+        <h2>Process Text with Gemini Pro</h2>
+        <input type="text" id="askBox" placeholder="Ask anything here">
+        <textarea type="text" id="contextBox" placeholder="Provide context here (Optional)"></textarea>
+        <button onclick="makeApiCall()">Submit</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        function makeApiCall() {
+            const askInput = document.getElementById('askBox').value;
+            const contextInput = document.getElementById('contextBox').value;
+            const responseDiv = document.getElementById('response');
+
+            const requestData = {
+                query: askInput,
+                context: contextInput
+            };
+            responseDiv.innerHTML = `<p>Loading...</p>`;
+            fetch('/processText', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseDiv.innerHTML = `<p>Response: ${data.response}</p>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                responseDiv.innerHTML = '<p>Error occurred during the API call.</p>';
+            });
+        }
+    </script>
+</body>
+</html>
