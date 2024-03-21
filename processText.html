@@ -41,14 +41,22 @@
             margin-bottom: 10px;
             box-sizing: border-box;
         }
+
+        table, td, th {
+        border: 1px solid;
+        }
+
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        }
     </style>
-    <title>Process Text - Gemini</title>
+    <title>Chat with DB - Gemini</title>
 </head>
 <body>
     <div id="container">
-        <h2>Process Text with Gemini Pro</h2>
-        <input type="text" id="askBox" placeholder="Ask anything here">
-        <textarea type="text" id="contextBox" placeholder="Provide context here (Optional)"></textarea>
+        <h2>Chat with Database</h2>
+        <input type="text" id="askBox" placeholder="Ask your DB">
         <button onclick="makeApiCall()">Submit</button>
         <div id="response"></div>
     </div>
@@ -56,12 +64,10 @@
     <script>
         function makeApiCall() {
             const askInput = document.getElementById('askBox').value;
-            const contextInput = document.getElementById('contextBox').value;
             const responseDiv = document.getElementById('response');
 
             const requestData = {
-                query: askInput,
-                context: contextInput
+                query: askInput
             };
             responseDiv.innerHTML = `<p>Loading...</p>`;
             fetch('/processText', {
@@ -73,7 +79,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                responseDiv.innerHTML = `<p>Response: ${data.response}</p>`;
+                responseDiv.innerHTML = `${data.response}`;
             })
             .catch(error => {
                 console.error('Error:', error);
